@@ -4,3 +4,7 @@ export interface IRegister {
     fullname: string
     password: string
 }
+
+export type AuthMiddlewareData = {
+    id: string;
+}

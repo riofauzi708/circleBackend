@@ -39,9 +39,9 @@ model Profile {
   id  Int @id @default(autoincrement())
   userId  Int @unique
   user User @relation(fields: [userId], references: [id])
-  avatar String
-  cover String
-  bio String
+  avatar String?
+  cover String?
+  bio String?
 }
 
 model Thread {

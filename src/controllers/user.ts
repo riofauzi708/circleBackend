@@ -8,12 +8,9 @@ export const Register = async (req: Request, res: Response) => {
         const result = await userService.Register(body);
         res.send({
             status: "success",
-            data: result,
         });
     } catch (error) {
         const err = error as unknown as Error;
-
-        console.log(err);
 
         if (err.message === "username or email already exist") {
             return res.status(400).send({
