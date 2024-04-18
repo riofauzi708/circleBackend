@@ -14,9 +14,10 @@ export const updateProfile = async (userId: number, payload: IProfile) => {
 
 
 export const getProfile = async (userId: number) => {
+    
     return await db.profile.findFirst({
         where: {
-            userId,
+            userId
         }
     })
 }

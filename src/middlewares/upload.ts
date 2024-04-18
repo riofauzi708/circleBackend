@@ -44,6 +44,12 @@ const uploadMiddleware = (fieldname: string) => {
                     error: (err as unknown as Error).message,
                 });
             }
+
+            return res.status(500).send({
+                status: "upload failed",
+                message: (err as unknown as Error).message,
+            });
+
         }
 
         return next();

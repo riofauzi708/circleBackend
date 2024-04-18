@@ -48,3 +48,23 @@ export const getProfile = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const getProfileById = async (req: Request, res: Response) => {
+    try {
+        const { id: Id } = req.params
+
+        const profile = await profileService.getProfile(+Id);
+        
+        res.send({
+            status: "success",
+            data: profile
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).send({
+            status: "failed",
+            message: error
+        });
+    }
+}

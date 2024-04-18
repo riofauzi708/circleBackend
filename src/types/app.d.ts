@@ -15,3 +15,10 @@ export interface IProfile {
     cover?: string
     userId?: number
 }
+
+export interface IThread {
+    id?: number;
+    content?: string;
+    userId: number;
+    threadId?: number;
+ }
