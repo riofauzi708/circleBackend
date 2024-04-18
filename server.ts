@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import db from "./src/db"
 import { follow, getFollower, unfollow } from "./src/controllers/follow"
 import router from "./src/routes"
+import path from 'path';
 
 dotenv.config();
 const PORT = process.env.PORT
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads",express.static(path.join(__dirname, "src/uploads")));
 app.use(router);
 
 app.get('/', async (req, res) => {

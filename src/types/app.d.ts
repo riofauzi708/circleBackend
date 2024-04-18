@@ -8,3 +8,10 @@ export interface IRegister {
 export type AuthMiddlewareData = {
     id: string;
 }
+
+export interface IProfile {
+    bio?: string
+    avatar?: string
+    cover?: string
+    userId?: number
+}
