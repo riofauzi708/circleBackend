@@ -1,74 +1,104 @@
-import db from "../db";
 import { Request, Response } from "express";
+import prisma from "../db";
+import * as followService from "../services/follow";
 
 export const follow = async (req: Request, res: Response) => {
-    try {
-        const { followerId, followingId } = req.body
+   try {
+      console.log(req.body);
+      const { followingId } = req.body;
+      const followerId = res.locals.user;
 
-        const follow = await db.follow.create({
-            data: {
-                followerId,
-                followingId
-            }
-        });
+      const followResult = await followService.follow(followerId, followingId);
 
-        console.log(follow);
+      res.json({
+         success: true,
+         message: followResult,
+      });
+   } catch (error) {
+      console.log(error);
 
-        res.send({
-            status: 'success',
-            data: follow
-        })   
-    } catch (error) {
-        res.status(500).send({
-            status: 'failed',
-            message: error
-        });
-    }
-}
+      res.status(500).json({
+         success: false,
+         error: error,
+      });
+   }
+};
 
-export const getFollower = async (req: Request, res: Response) => {
-    try {
-        const { followingId } = req.params;
+export const getFollowers = async (req: Request, res: Response) => {
+   try {
+      const { followingId } = req.params;
 
-        const follower = await db.follow.findMany({
-            where: {
-                followingId: +followingId,
-            }
-        });
+      const followers = await prisma.follow.findMany({
+         where: {
+            followingId: +followingId,
+         },
+         select: {
+            follower: {
+               select: {
+                  id: true,
+                  fullname: true,
+                  username: true,
+                  profile: {
+                     select: {
+                        avatar: true,
+                     },
+                  },
+               },
+            },
+         },
+      });
 
-        res.send({
-            status: 'success',
-            data: follower
-        })
+      res.json({
+         success: true,
+         message: "success",
+         data: followers,
+      });
+   } catch (error) {
+      const err = error as Error;
+      console.log(err);
+      res.status(500).json({
+         success: false,
+         error: error,
+      });
+   }
+};
 
-    } catch (error) {
-        res.status(500).send({
-            status: 'failed',
-            message: error
-        });
-    }
-}
+export const getFollowings = async (req: Request, res: Response) => {
+   try {
+      const { followerId } = req.params;
 
-export const unfollow = async (req: Request, res: Response) => {
-    try {
-        const { followerId } = req.body
+      const followings = await prisma.follow.findMany({
+         where: {
+            followerId: +followerId,
+         },
+         include: {
+            following: {
+               select: {
+                  id: true,
+                  fullname: true,
+                  username: true,
+                  profile: {
+                     select: {
+                        avatar: true,
+                     },
+                  },
+               },
+            },
+         },
+      });
 
-        const unfollow = await db.follow.deleteMany({
-            where: {
-                followerId: +followerId,
-            }
-        });
+      res.json({
+         success: true,
+         message: "success",
+         data: followings,
+      });
+   } catch (error) {
+      const err = error as Error;
+      console.log(err);
 
-        console.log(unfollow);
-
-        res.send({
-            status: 'success',
-            data: unfollow
-        })   
-    } catch (error) {
-        res.status(500).send({
-            status: 'failed',
-            message: error
-        });
-    }
-}
+      res.status(500).json({
+         success: false,
+         error: err.message,
+      });
+   }
+};

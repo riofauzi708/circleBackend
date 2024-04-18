@@ -11,6 +11,11 @@ export const getThreads = async () => {
                 select: {
                     image: true
                 }
+            },
+            _count: {
+                select: {
+                    replies: true
+                }
             }
         }
     });
@@ -35,43 +40,74 @@ export const getThread = async (id: number) => {
 export const createThread = async (
     payload: IThread,
     files: { [fieldname: string]: Express.Multer.File[] }
- ) => {
+) => {
     const thread = await db.thread.create({
-       data: {
-          ...payload,
-          threadId: payload.threadId ? +payload.threadId : null,
-       },
+        data: {
+            ...payload,
+            threadId: payload.threadId ? +payload.threadId : null,
+        },
     });
- 
+
     if (files.image) {
-       await db.threadImage.createMany({
-          data: files.image.map((image) => ({
-             image: image.filename,
-             threadId: thread.id,
-          })),
-       });
+        await db.threadImage.createMany({
+            data: files.image.map((image) => ({
+                image: image.filename,
+                threadId: thread.id,
+            })),
+        });
     }
- 
+
     return thread;
- };
+};
 
 export const deleteThread = async (idThread: number, userId: number) => {
     const existedThread = await db.thread.delete({
         where: {
-            id : idThread
+            id: idThread
         }
     })
-    
-    if (!existedThread) { 
+
+    if (!existedThread) {
         throw new Error("thread not found")
     }
 
-    if(existedThread.userId !== userId) {
+    if (existedThread.userId !== userId) {
         throw new Error("you are not allowed to delete this thread")
     }
-    return await db.thread.delete({
+
+    return existedThread;
+}
+
+export const getReplies = async (threadId: number) => {
+    const replies = await db.thread.findMany({
         where: {
-            id : idThread
+            threadId: threadId
+        },
+        include: {
+            image: {
+                select: {
+                    image: true
+                }
+            },
+            _count: {
+                select: {
+                    replies: true
+                }
+            },
+            author: {
+                select: {
+                    id: true,
+                    fullname: true,
+                    username: true,
+                    profile: {
+                        select: {
+                            avatar: true
+                        }
+                    }
+                }
+            }
         }
-    })
+    });
+
+    return replies;
 }
