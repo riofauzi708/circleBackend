@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -59,6 +59,7 @@ model Thread {
   parent   Thread?       @relation("threadReplies", fields: [threadId], references: [id])
   replies  Thread[]      @relation("threadReplies")
   image    ThreadImage[]
+  createAt  DateTime      @default(now())
 }
 
 model Like {

@@ -12,11 +12,27 @@ export const getThreads = async () => {
                     image: true
                 }
             },
+            author: {
+                select: {
+                    id: true,
+                    fullname: true,
+                    username: true,
+                    profile: {
+                        select: {
+                            avatar: true
+                        }
+                    }
+                }
+            },
             _count: {
                 select: {
-                    replies: true
+                    replies: true,
+                    like: true,
                 }
             }
+        },
+        orderBy: {
+            id: "desc"
         }
     });
 }
@@ -33,9 +49,13 @@ export const getThread = async (id: number) => {
                     image: true
                 }
             }
+        },
+        orderBy: {
+            id: "desc"
         }
     })
 }
+
 
 export const createThread = async (
     payload: IThread,
@@ -89,23 +109,20 @@ export const getReplies = async (threadId: number) => {
                     image: true
                 }
             },
-            _count: {
-                select: {
-                    replies: true
-                }
-            },
             author: {
-                select: {
-                    id: true,
-                    fullname: true,
-                    username: true,
+                include: {
                     profile: {
                         select: {
                             avatar: true
                         }
                     }
                 }
-            }
+            },
+            _count: {
+                select: {
+                    replies: true
+                }
+            },
         }
     });
 

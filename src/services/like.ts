@@ -24,6 +24,15 @@ export const getLikes = async (threadId: number) => {
   });
 };
 
+export const getCurrentLike = async (threadId: number, userId: number) => {
+  return await db.like.findFirst({
+    where: {
+      threadId,
+      userId,
+    },
+  });
+}
+
 export const createLike = async (payload: {
   threadId: number;
   userId: number;
@@ -44,20 +53,20 @@ export const createLike = async (payload: {
       userId: payload.userId,
     },
   });
-  console.log("like is", !existedLike);
 
   if (existedLike) {
-    return await db.like.deleteMany({
+    await db.like.deleteMany({
       where: {
         threadId: payload.threadId,
         userId: payload.userId,
       },
     });
+    return null; // Return null to indicate that the like was deleted
   }
 
   return await db.like.create({
-     data: {
-        ...payload,
-     },
+    data: {
+      ...payload,
+    },
   });
 };

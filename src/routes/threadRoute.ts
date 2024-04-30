@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authentication from "../middlewares/authentication";
 import uploadMiddleware from "../middlewares/upload";
-import { createThread, getReplies, getThread, getThreads } from "../controllers/thread";
+import { createThread, deleteThread, getReplies, getThread, getThreads } from "../controllers/thread";
 
 const threadRouter = Router();
 
@@ -9,5 +9,6 @@ const threadRouter = Router();
     threadRouter.get("/threads", getThreads);
     threadRouter.get("/thread/:id", getThread);
     threadRouter.get("/replies/:id", authentication, getReplies);
+    threadRouter.delete("/thread/:id", authentication, deleteThread);
 
 export default threadRouter

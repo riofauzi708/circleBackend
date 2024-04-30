@@ -26,4 +26,12 @@ export interface IRegister {
     content?: string;
     userId: number;
     threadId?: number;
+    createdAt?: Date;
+ }
+
+ export interface IUser {
+    id: number;
+    username: string;
+    email: string;
+    fullname: string;
  }

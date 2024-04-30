@@ -6,7 +6,11 @@ import jwt from "jsonwebtoken"
 
 
 export const getUsers = async () => {
-    return await db.user.findMany()
+    return await db.user.findMany({
+        include: {
+            profile: true
+        }
+    })
 }
 
 export const getUser = async (id: number) => {
@@ -55,6 +59,8 @@ export const Register = async (payload: IRegister) => {
             userId: user.id
         }
     })
+
+    return {user, profile}
 
 }
 

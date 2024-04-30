@@ -18,6 +18,21 @@ export const getProfile = async (userId: number) => {
     return await db.profile.findFirst({
         where: {
             userId
+        },
+        include: {
+            user: {
+                select: {
+                    fullname: true,
+                    username: true,
+                    id: true,
+                    _count: {
+                        select: {
+                            following: true,
+                            follower: true
+                        }
+                    }
+                }
+            }
         }
     })
 }
