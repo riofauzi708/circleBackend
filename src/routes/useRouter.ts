@@ -8,4 +8,4 @@ userRouter.post("/register", Register);
 userRouter.post("/login", Login);
 userRouter.get("/users", authentication, getUsers);
 
-export default userRouter
+export default userRouter;
